@@ -1,0 +1,4 @@
+= redmine_task_manager
+
+Plugin for task management.
+

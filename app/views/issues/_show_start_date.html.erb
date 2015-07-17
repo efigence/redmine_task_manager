@@ -1,0 +1,6 @@
+<%= issue_fields_rows do |rows| %>
+
+unless @issue.disabled_core_fields.include?('start_time')
+  rows.right l(:field_start_time), format_date(@issue.start_time), :class => 'start-time'
+
+<% end %>

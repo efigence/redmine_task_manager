@@ -1,1 +1,116 @@
-index.html.erb
+<h2><%=l(:label_task_manager)%></h2>
+
+<div class="alert alert-danger">
+  <strong>You have unassigned project tasks.</strong>
+</div>
+
+<div class="alert alert-danger">
+  <strong>You have overbooked project members.</strong>
+</div>
+
+<div class="alert alert-danger">
+  <strong>You have underbooked project members.</strong>
+</div>
+
+<fieldset><legend><%= l(:label_filter_plural) %></legend>
+  <div class="splitcontentleft">
+    <label for='projects'><%= l(:field_project) %>:</label>
+    <%= collection_select(:projects, :post, Project.all, :id, :name) %>
+  </div>
+  <div class="splitcontentright">
+    <div style="float: right">
+      <label for='groups'><%= l(:field_groups) %>:</label>
+      <%= collection_select(:groups, :post, Group.all, :id, :name) %>
+      <label for='users'><%= l(:field_users) %>:</label>
+      <%= collection_select(:users, :post, User.all, :id, :name) %>
+    </div>
+  </div>
+</fieldset>
+&nbsp;
+
+<fieldset><legend><%= l(:label_project_tasks) %></legend>
+<table id="tasks" class="table table-striped table-hover table-bordered">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Tracker</th>
+      <th>Subject</th>
+      <th>Estimated time for task</th>
+      <th>Assigned to</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1500</td>
+      <td>Task</td>
+      <td>Do something</td>
+      <td>8</td>
+      <td>Maria</td>
+    </tr>
+    <tr>
+      <td>100900</td>
+      <td>Task</td>
+      <td>Do something else</td>
+      <td>2</td>
+      <td>This task is not assigned</td>
+    </tr>
+    <tr>
+      <td>2750</td>
+      <td>Task</td>
+      <td>Do nothing</td>
+      <td>3</td>
+      <td>Someone else</td>
+    </tr>
+  </tbody>
+</table>
+
+<fieldset><legend><%= l(:label_project_members) %></legend>
+
+<table id="users" class="table table-striped table-hover table-bordered">
+<thead>
+</thead>
+<tbody>
+  <tr>
+</tbody>
+</table>
+
+<table id="users" class="table table-striped table-hover table-bordered">
+  <thead>
+    <tr>
+      <th>Member</th>
+      <th>Project</th>
+      <th>Task</th>
+      <th>Estimated time for task</th>
+      <th>Assigned daily time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Maria</td>
+      <td>Aaaa test</td>
+      <td>Do something</td>
+      <td>8</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>Maria</td>
+      <td>Bbbb test</td>
+      <td>Don't do anything</td>
+      <td>6</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>Someone</td>
+      <td>Aaaa test</td>
+      <td>Do nothing</td>
+      <td>3</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+
+<% content_for :header_tags do %>
+<%= stylesheet_link_tag 'bootstrap', :plugin => 'redmine_whoiswho' %>
+<%= javascript_include_tag 'bootstrap', :plugin => 'redmine_whoiswho' %>
+<% end %>

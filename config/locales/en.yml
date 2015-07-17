@@ -1,3 +1,9 @@
 # English strings go here for Rails i18n
 en:
   field_start_time: Start time
+  label_task_manager: Task manager
+  field_project: Projects
+  field_groups: Groups
+  field_users: Users
+  label_project_tasks: Project tasks
+  label_project_members: Project members

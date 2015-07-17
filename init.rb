@@ -10,5 +10,4 @@ end
 
 ActionDispatch::Callbacks.to_prepare do
   require 'redmine_task_manager/patches/issue_patch'
-  # require 'redmine_task_manager/hooks/show_start_date'
 end

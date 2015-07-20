@@ -95,3 +95,9 @@ $(document).ready(function(){
 });
 
 </script>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'jquery.timepicker', :plugin => 'redmine_task_manager' %>
+  <%= javascript_include_tag 'jquery.timepicker', :plugin => 'redmine_task_manager' %>
+<% end %>
+

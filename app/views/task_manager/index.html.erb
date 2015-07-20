@@ -28,89 +28,94 @@
 </fieldset>
 &nbsp;
 
+<div id="date"></div>
+&nbsp;
+
 <fieldset><legend><%= l(:label_project_tasks) %></legend>
-<table id="tasks" class="table table-striped table-hover table-bordered">
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Tracker</th>
-      <th>Subject</th>
-      <th>Estimated time for task</th>
-      <th>Assigned to</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1500</td>
-      <td>Task</td>
-      <td>Do something</td>
-      <td>8</td>
-      <td>Maria</td>
-    </tr>
-    <tr>
-      <td>100900</td>
-      <td>Task</td>
-      <td>Do something else</td>
-      <td>2</td>
-      <td>This task is not assigned</td>
-    </tr>
-    <tr>
-      <td>2750</td>
-      <td>Task</td>
-      <td>Do nothing</td>
-      <td>3</td>
-      <td>Someone else</td>
-    </tr>
-  </tbody>
-</table>
+  <table id="tasks" class="table table-striped table-hover table-bordered">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Tracker</th>
+        <th>Subject</th>
+        <th>Estimated time for task</th>
+        <th>Assigned to</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1500</td>
+        <td>Task</td>
+        <td>Do something</td>
+        <td>8</td>
+        <td>Maria</td>
+      </tr>
+      <tr>
+        <td>100900</td>
+        <td>Task</td>
+        <td>Do something else</td>
+        <td>2</td>
+        <td>This task is not assigned</td>
+      </tr>
+      <tr>
+        <td>2750</td>
+        <td>Task</td>
+        <td>Do nothing</td>
+        <td>3</td>
+        <td>Someone else</td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
 
 <fieldset><legend><%= l(:label_project_members) %></legend>
+<table id="members" class="table table-striped table-hover table-bordered">
+    <thead>
+      <tr>
+        <th>Member</th>
+        <th># of project tasks</th>
+        <th>Estimated time for project tasks</th>
+        <th>Daily time assigned to project</th>
+        <th># of all tasks</th>
+        <th>Estimated time for all tasks</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Maria</td>
+        <td>1</td>
+        <td>8</td>
+        <td>6</td>
+        <td>2</td>
+        <td>14</td>
+      </tr>
+      <tr>
+        <td>Someone else</td>
+        <td>1</td>
+        <td>3</td>
+        <td>5</td>
+        <td>2</td>
+        <td>5</td>
+      </tr>
+    </tbody>
+  </table>
+</fieldset>
 
-<table id="users" class="table table-striped table-hover table-bordered">
-<thead>
-</thead>
-<tbody>
-  <tr>
-</tbody>
-</table>
+<script type='text/javascript'>
 
-<table id="users" class="table table-striped table-hover table-bordered">
-  <thead>
-    <tr>
-      <th>Member</th>
-      <th>Project</th>
-      <th>Task</th>
-      <th>Estimated time for task</th>
-      <th>Assigned daily time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Maria</td>
-      <td>Aaaa test</td>
-      <td>Do something</td>
-      <td>8</td>
-      <td>6</td>
-    </tr>
-    <tr>
-      <td>Maria</td>
-      <td>Bbbb test</td>
-      <td>Don't do anything</td>
-      <td>6</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>Someone</td>
-      <td>Aaaa test</td>
-      <td>Do nothing</td>
-      <td>3</td>
-      <td>5</td>
-    </tr>
-  </tbody>
-</table>
+  $(document).ready(function(){
+    $('#date').datepaginator();
+  });
+
+</script>
 
 
 <% content_for :header_tags do %>
-<%= stylesheet_link_tag 'bootstrap', :plugin => 'redmine_whoiswho' %>
-<%= javascript_include_tag 'bootstrap', :plugin => 'redmine_whoiswho' %>
+<%= stylesheet_link_tag 'bootstrap', :plugin => 'redmine_task_manager' %>
+<%= stylesheet_link_tag 'bootstrap-datetimepicker', :plugin => 'redmine_task_manager' %>
+<%= javascript_include_tag 'jquery', :plugin => 'redmine_task_manager' %>
+<%= javascript_include_tag 'moment', :plugin => 'redmine_task_manager' %>
+<%= javascript_include_tag 'bootstrap', :plugin => 'redmine_task_manager' %>
+<%= javascript_include_tag 'bootstrap-datetimepicker', :plugin => 'redmine_task_manager' %>
+<%= javascript_include_tag 'bootstrap-datepaginator', :plugin => 'redmine_task_manager' %>
 <% end %>

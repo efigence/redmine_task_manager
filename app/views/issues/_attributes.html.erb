@@ -56,9 +56,10 @@
 
 <% if @issue.safe_attribute? 'start_time' %>
 <p id="start_time_area">
-  <%= f.text_field(:start_time, :size => 10, :disabled => !@issue.leaf?,
+  <%= f.text_field(:start_time, value: @issue.start_time.try(:strftime, "%I:%M %p"), :size => 10, :disabled => !@issue.leaf?,
                    :required => @issue.required_attribute?('start_time'), :class => "timepicker") %>
 </p>
+
 <% end %>
 
 <% if @issue.safe_attribute? 'due_date' %>

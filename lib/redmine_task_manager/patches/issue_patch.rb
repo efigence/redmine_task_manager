@@ -7,7 +7,6 @@ module RedmineTaskManager
 
           safe_attributes 'start_time'
 
-
         end
       end
     end

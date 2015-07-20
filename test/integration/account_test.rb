@@ -20,6 +20,7 @@ class AccountTest < Redmine::IntegrationTest
     log_user("jsmith", "jsmith")
   end
 
+  # tests for addition of start_time column in issues
   def test_new_issue_should_fetch_start_time
     get '/projects/ecookbook/issues/new'
     assert_response :success
@@ -57,6 +58,13 @@ class AccountTest < Redmine::IntegrationTest
       @issue.status_id = 1
       @issue.save
     end
+  end
+
+  # tests for addition of hours_per_day column in members
+  def test_members_should_fetch_hours_per_day
+    get '/projects/ecookbook/settings/members'
+    assert_response :success
+    assert_select '.hours'
   end
 
 end

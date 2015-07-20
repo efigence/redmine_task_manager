@@ -1,4 +1,4 @@
-= redmine_task_manager
+= redmine_task_manager (work in progress - do not use!)
 
 Plugin for task management.
 

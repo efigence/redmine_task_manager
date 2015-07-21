@@ -1,6 +1,4 @@
 <%= issue_fields_rows do |rows|
-  rows.left l(:field_status), h(@issue.status.name), :class => 'status'
-  rows.left l(:field_priority), h(@issue.priority.name), :class => 'priority'
 
   unless @issue.disabled_core_fields.include?('start_time')
     rows.right l(:field_start_time), @issue.start_time.try(:strftime, "%I:%M %p"), :class => 'start-time'

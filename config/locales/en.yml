@@ -10,3 +10,5 @@ en:
   label_hours_per_day: Hours per day
   label_calendar: Calendar
   field_id: '#'
+  settings:
+    allowed_groups_to_use_task_manager: Groups allowed to use Task Manager

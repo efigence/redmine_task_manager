@@ -1,6 +1,6 @@
 require File.expand_path('../../test_helper', __FILE__)
 
-class AccountTest < Redmine::IntegrationTest
+class StartTimeTest < Redmine::IntegrationTest
   fixtures :projects,
            :users, :email_addresses,
            :roles,

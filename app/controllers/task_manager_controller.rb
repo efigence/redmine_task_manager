@@ -1,5 +1,4 @@
 class TaskManagerController < ApplicationController
-  unloadable
 
   helper :sort
   include SortHelper
@@ -7,11 +6,30 @@ class TaskManagerController < ApplicationController
   before_filter :check_access
 
   def index
-    @issues = Issue.all
-    @members = Member.all
-
     sort_init 'issues.id', 'asc'
     sort_update %w(issues.tracker issues.subject issues.estimated_hours issues.assigned_to issues.id)
+
+    @members = Member.all
+    @projects = Project.joins("JOIN issues ON issues.project_id = projects.id")
+    @users = User.joins("JOIN issues ON issues.assigned_to_id = users.id")
+    @groups = Group.all
+
+    case params[:format]
+    when 'xml', 'json'
+      @offset, @limit = api_offset_and_limit
+    else
+      @limit = per_page_option
+    end
+
+    scope = Issue.open
+    scope = scope.where(project_id: params[:project_id]) if params[:project_id].present?
+    # scope = scope.where(group_id: params[:group_id]) if params[:group_id].present?
+    # scope = scope.where(user_id: params[:user_id]) if params[:user_id].present?
+
+    @issue_count = scope.count
+    @issue_pages = Paginator.new @issue_count, @limit, params['page']
+    @offset ||= @issue_pages.offset
+    @issues =  scope.order(sort_clause).limit(@limit).offset(@offset).to_a
 
   end
 

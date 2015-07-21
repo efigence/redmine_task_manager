@@ -2,7 +2,7 @@ module TaskManagerHelper
 
   def estimated_hours_per_day(issue)
     if issue.due_date && issue.due_date > issue.start_date && issue.estimated_hours
-      issue.estimated_hours / (issue.due_date - issue.start_date)
+      ((issue.estimated_hours / (issue.due_date - issue.start_date)) * 2).round / 2.0
     else
       issue.estimated_hours
     end

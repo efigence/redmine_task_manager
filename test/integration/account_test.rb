@@ -18,9 +18,14 @@ class AccountTest < Redmine::IntegrationTest
 
   def setup
     log_user("jsmith", "jsmith")
+    @issue = Issue.new
+    @issue.subject = "Testing start_time"
+    @issue.project_id = 1
+    @issue.tracker_id = 1
+    @issue.author_id = 1
+    @issue.status_id = 1
   end
 
-  # tests for addition of start_time column in issues
   def test_new_issue_should_fetch_start_time
     get '/projects/ecookbook/issues/new'
     assert_response :success
@@ -35,12 +40,6 @@ class AccountTest < Redmine::IntegrationTest
 
   def test_should_create_issue_with_proper_start_time_format
     assert_difference 'Issue.count', +1 do
-      @issue = Issue.new
-      @issue.subject = "Testing start_time"
-      @issue.project_id = 1
-      @issue.tracker_id = 1
-      @issue.author_id = 1
-      @issue.status_id = 1
       @issue.start_time = '15:00'
       @issue.save
     end
@@ -50,21 +49,8 @@ class AccountTest < Redmine::IntegrationTest
 
   def test_should_create_issue_without_start_time
     assert_difference 'Issue.count', +1 do
-      @issue = Issue.new
-      @issue.subject = "Testing start_time"
-      @issue.project_id = 1
-      @issue.tracker_id = 1
-      @issue.author_id = 1
-      @issue.status_id = 1
       @issue.save
     end
-  end
-
-  # tests for addition of hours_per_day column in members
-  def test_members_should_fetch_hours_per_day
-    get '/projects/ecookbook/settings/members'
-    assert_response :success
-    assert_select '.hours'
   end
 
 end

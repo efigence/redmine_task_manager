@@ -9,7 +9,6 @@
     <tr>
       <th><%= l(:label_user) %> / <%= l(:label_group) %></th>
       <th><%= l(:label_role_plural) %></th>
-      <th><%= l(:label_hours) %></th>
       <th style="width:15%"></th>
       <%= call_hook(:view_projects_settings_members_table_header, :project => @project) %>
     </tr>
@@ -18,7 +17,10 @@
   <% members.each do |member| %>
   <% next if member.new_record? %>
   <tr id="member-<%= member.id %>" class="<%= cycle 'odd', 'even' %> member">
-  <td class="name <%= member.principal.class.name.downcase %>"><%= link_to_user member.principal %></td>
+  <td class="name <%= member.principal.class.name.downcase %>">
+    <%= link_to_user member.principal %>
+    (available <%= member.hours_per_day.to_f %> h/d)
+  </td>
 
 
   <td class="roles">
@@ -29,6 +31,13 @@
                     :method => :put,
                     :html => { :id => "member-#{member.id}-roles-form", :class => 'hol' }}
              ) do |f| %>
+
+        <p>
+          <%= f.label l(:label_hours_per_day) %>
+          <%= f.text_field :hours_per_day %>
+          <hr/>
+        </p>
+
         <p>
           <% roles.each do |role| %>
           <label>
@@ -45,36 +54,15 @@
         <p>
           <%= submit_tag l(:button_save), :class => "small" %>
           <%= link_to_function(l(:button_cancel),
-                               "$('#member-#{member.id}-roles').show(); $('#member-#{member.id}-hours').show();
-                                $('#member-#{member.id}-roles-form').hide(); $('#member-#{member.id}-hours-form').hide(); return false;") %>
+                               "$('#member-#{member.id}-roles').show(); $('#member-#{member.id}-roles-form').hide(); return false;") %>
         </p>
-      <% end %>
-  </td>
-
-
-  <td class="hours">
-    <span id="member-<%= member.id %>-hours"><%= member.hours_per_day %></span>
-      <%= form_for(member,
-                   {:as => :membership, :remote => true,
-                    :url => membership_path(member),
-                    :method => :put,
-                    :html => { :id => "member-#{member.id}-hours-form", :class => 'hol' }}
-             ) do |f| %>
-        <p>
-          <label>
-            <%= text_field_tag 'hours_per_day', member.hours_per_day %>
-          </label><br />
-          </p>
-            <%= hidden_field_tag 'hours_per_day', '', :id => nil %>
-          <p>
       <% end %>
   </td>
 
 
   <td class="buttons">
       <%= link_to_function l(:button_edit),
-                           "$('#member-#{member.id}-roles').hide(); $('#member-#{member.id}-hours').hide();
-                            $('#member-#{member.id}-roles-form').show(); $('#member-#{member.id}-hours-form').show(); return false;",
+                           "$('#member-#{member.id}-roles').hide(); $('#member-#{member.id}-roles-form').show(); return false;",
                            :class => 'icon icon-edit' %>
       <%= delete_link membership_path(member),
                       :remote => true,

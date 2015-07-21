@@ -7,4 +7,6 @@ en:
   field_users: Users
   label_project_tasks: Project tasks
   label_project_members: Project members
-  label_hours: Hours per day
+  label_hours_per_day: Hours per day
+  label_calendar: Calendar
+  field_id: '#'

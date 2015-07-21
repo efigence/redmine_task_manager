@@ -1,0 +1,7 @@
+---
+settings_001:
+  id: 1
+  name: plugin_redmine_task_manager
+  value:
+    groups: ["4"]
+  updated_on: 2015-07-01 09:50:22 +02:00

@@ -10,11 +10,12 @@ Redmine::Plugin.register :redmine_task_manager do
   :task_manager,
   { :controller => 'task_manager', :action => 'index' },
   caption: :label_task_manager,
-  :if => proc { User.current.logged? && (User.current.admin? || User.current.has_access?) }
+  :if => proc { User.current.logged? && (User.current.admin? || User.current.has_task_manager_access?) }
 
   settings :default => {
     'groups' => []
     }, :partial => 'settings/redmine_task_manager_settings'
+
 
     ActionDispatch::Callbacks.to_prepare do
       require 'redmine_task_manager/patches/issue_patch'

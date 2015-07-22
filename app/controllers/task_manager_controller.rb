@@ -28,7 +28,8 @@ class TaskManagerController < ApplicationController
                   .joins("LEFT JOIN users ON issues.assigned_to_id = users.id")
                   .joins("LEFT JOIN members ON issues.assigned_to_id = members.user_id")
     scope = scope.where(project_id: params[:project_id]) if params[:project_id].present?
-    # scope = scope.where(group_id: params[:group_id]) if params[:group_id].present?
+    # @cos = User.where(group_id: params[:group_id]).map(&:id)
+    # scope = scope.where(user_id: @cos) if params[:group_id].present?
     scope = scope.where(assigned_to_id: params[:user_id]) if params[:user_id].present?
 
     @issue_count = scope.count
@@ -37,9 +38,9 @@ class TaskManagerController < ApplicationController
     @issues =  scope.order(sort_clause).limit(@limit).offset(@offset).to_a
 
     @members = Member.all
-    @projects = Project.all
-    @users = User.all
-    @groups = Group.all
+    @projects = Project.all.sort_by(&:name)
+    @users = User.all.sort_by(&:firstname)
+    @groups = Group.all.sort_by(&:lastname)
 
   end
 

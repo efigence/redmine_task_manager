@@ -2,44 +2,50 @@
 
 <% if has_unassigned_issues? %>
   <div class="alert alert-danger">
-    <strong>You have unassigned project tasks.</strong>
+    <strong><%= l(:label_unassigned_tasks) %></strong>
   </div>
 <% end %>
 
 <% if has_overbooked_members? %>
   <div class="alert alert-danger">
-    <strong>You have overbooked project members.</strong>
+    <strong><%= l(:label_overbooked_members) %></strong>
   </div>
 <% end %>
 
 <% if has_underbooked_members? %>
   <div class="alert alert-danger">
-    <strong>You have underbooked project members.</strong>
+    <strong><%= l(:label_underbooked_members) %></strong>
   </div>
 <% end %>
 
-<fieldset><legend><%= l(:label_filter_plural) %></legend>
-  <div class="splitcontentleft, col-sm-4">
-    <label for='projects'><%= l(:field_project) %>:</label>
-    <%= select_tag 'project', content_tag('option') + options_from_collection_for_select(@projects, :id, :name, params[:project_id].to_i),
-    :onchange => "this.form.submit(); return false;", :class => "form-control" %>
-  </div>
-  <div class="splitcontentright">
-    <div style="float: right" class="col-sm-4">
-      <label for='groups'><%= l(:field_groups) %>:</label>
-      <%= select_tag 'group', content_tag('option') + options_from_collection_for_select(@groups, :id, :name, params[:group_id].to_i),
-      :onchange => "this.form.submit(); return false;", :class => "form-control" %>
-      <label for='users'><%= l(:field_users) %>:</label>
-      <%= select_tag 'user', content_tag('option') + options_from_collection_for_select(@users, :id, :name, params[:user_id].to_i),
+<%= form_tag(task_manager_path, :method => :get) do %>
+  <fieldset><legend><%= l(:label_filter_plural) %></legend>
+    <div class="splitcontentleft, col-sm-3">
+      <label for='project_id'><%= l(:label_projects) %>:</label>
+      <%= select_tag 'project_id', content_tag('option') + options_from_collection_for_select(@projects, :id, :name, params[:project_id].to_i),
       :onchange => "this.form.submit(); return false;", :class => "form-control" %>
     </div>
-  </div>
-</fieldset>
+    <div class="splitcontentright">
+      <div style="float: right" class="col-sm-6">
+        <div class="splitcontentleft">
+          <label for='group_id'><%= l(:label_groups) %>:</label>
+          <%= select_tag 'group_id', content_tag('option') + options_from_collection_for_select(@groups, :id, :name, params[:group_id].to_i),
+          :onchange => "this.form.submit(); return false;", :class => "form-control" %>
+        </div>
+        <div class="splitcontentright">
+          <label for='user_id'><%= l(:label_users) %>:</label>
+          <%= select_tag 'user_id', content_tag('option') + options_from_collection_for_select(@users, :id, :name, params[:user_id].to_i),
+          :onchange => "this.form.submit(); return false;", :class => "form-control" %>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+<% end %>
 &nbsp;
 
 
 <fieldset><legend><%= l(:label_project_tasks) %></legend>
-  <div id="date" style="width: 37vh"></div>
+  <div id="date" style="width: 38vh"></div>
   &nbsp;
   <table id="tasks" class="table table-striped table-hover table-bordered">
     <thead>
@@ -49,10 +55,11 @@
         <%= sort_header_tag('trackers.name', :caption => l(:field_tracker)) %>
         <%= sort_header_tag('issues.subject', :caption => l(:field_subject)) %>
         <%= sort_header_tag('issues.estimated_hours', :caption => l(:field_estimated_hours)) %>
-        <%= sort_header_tag('estimated_hours_per_day', :caption => l(:field_estimated_hours_per_day)) %>
+        <th><%= l(:field_estimated_hours_per_day) %></th>
         <%= sort_header_tag('users.firstname', :caption => l(:field_assignee_firstname)) %>
         <%= sort_header_tag('users.lastname', :caption => l(:field_assignee_lastname)) %>
         <%= sort_header_tag('members.hours_per_day', :caption => l(:field_assignee_hours_per_day)) %>
+        <th>Time difference (temp column)</th>
       </tr>
     </thead>
     <tbody>
@@ -67,6 +74,7 @@
         <td><%= issue_assigned_to_firstname(issue) %></td>
         <td><%= issue_assigned_to_lastname(issue) %></td>
         <td><%= assignees_hours_per_day(issue) %></td>
+        <td><%= time_difference(issue) %></td>
       </tr>
       <% end %>
     </tbody>
@@ -74,47 +82,6 @@
   <ul class="pagination"><li><%= pagination_links_full @issue_pages, @issue_count %><li></ul>
 </fieldset>
 &nbsp;
-
-<fieldset><legend><%= l(:label_project_members) %></legend>
-  <table id="members" class="table table-striped table-hover table-bordered">
-    <thead>
-      <tr>
-        <th>Member</th>
-        <th># of project tasks</th>
-        <th>Estimated time for project tasks</th>
-        <th>Time for project per day</th>
-        <th># of all tasks</th>
-        <th>Estimated time for all tasks</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Maria</td>
-        <td>1</td>
-        <td>8</td>
-        <td>6</td>
-        <td>2</td>
-        <td>14</td>
-      </tr>
-      <tr>
-        <td>Someone else</td>
-        <td>1</td>
-        <td>3</td>
-        <td>5</td>
-        <td>2</td>
-        <td>5</td>
-      </tr>
-    </tbody>
-  </table>
-</fieldset>
-
-<script type='text/javascript'>
-
-  $(document).ready(function(){
-    $('#date').datepaginator();
-  });
-
-</script>
 
 
 <% content_for :header_tags do %>
@@ -125,4 +92,5 @@
 <%= javascript_include_tag 'bootstrap', :plugin => 'redmine_task_manager' %>
 <%= javascript_include_tag 'bootstrap-datetimepicker', :plugin => 'redmine_task_manager' %>
 <%= javascript_include_tag 'bootstrap-datepaginator', :plugin => 'redmine_task_manager' %>
+<%= javascript_include_tag 'task_manager', :plugin => 'redmine_task_manager' %>
 <% end %>

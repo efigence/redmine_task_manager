@@ -17,11 +17,19 @@ module TaskManagerHelper
     end
   end
 
-  def issue_assigned_to(issue)
+  def issue_assigned_to_firstname(issue)
     if issue.assigned_to
-      issue.assigned_to
+      issue.assigned_to.firstname
     else
-      'This task is not assigned.'
+      ' This task is not assigned.'
+    end
+  end
+
+  def issue_assigned_to_lastname(issue)
+    if issue.assigned_to
+      issue.assigned_to.lastname
+    else
+      ' This task is not assigned.'
     end
   end
 

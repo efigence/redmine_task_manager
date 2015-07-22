@@ -13,5 +13,9 @@ en:
   field_tracker: Tracker
   field_subject: Subject
   field_estimated_hours: Estimated time for task
+  field_assignee_firstname: Assignee's first name
+  field_assignee_lastname: Assignee's last name
+  field_assignee_hours_per_day: Assignee's time for project per day
+  field_estimated_hours_per_day: Estimated time for task per day
   settings:
     allowed_groups_to_use_task_manager: Groups allowed to use Task Manager

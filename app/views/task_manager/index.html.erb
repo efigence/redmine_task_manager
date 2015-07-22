@@ -15,14 +15,17 @@
 <fieldset><legend><%= l(:label_filter_plural) %></legend>
   <div class="splitcontentleft, col-sm-4">
     <label for='projects'><%= l(:field_project) %>:</label>
-    <%= select_tag 'project', content_tag('option') + options_from_collection_for_select(@projects, :id, :name, params[:project_id].to_i), :onchange => "this.form.submit(); return false;", :class => "form-control" %>
+    <%= select_tag 'project', content_tag('option') + options_from_collection_for_select(@projects, :id, :name, params[:project_id].to_i),
+    :onchange => "this.form.submit(); return false;", :class => "form-control" %>
   </div>
   <div class="splitcontentright">
     <div style="float: right" class="col-sm-4">
       <label for='groups'><%= l(:field_groups) %>:</label>
-      <%= select_tag 'group', content_tag('option') + options_from_collection_for_select(@groups, :id, :name, params[:group_id].to_i), :onchange => "this.form.submit(); return false;", :class => "form-control" %>
+      <%= select_tag 'group', content_tag('option') + options_from_collection_for_select(@groups, :id, :name, params[:group_id].to_i),
+      :onchange => "this.form.submit(); return false;", :class => "form-control" %>
       <label for='users'><%= l(:field_users) %>:</label>
-      <%= select_tag 'user', content_tag('option') + options_from_collection_for_select(@users, :id, :name, params[:user_id].to_i), :onchange => "this.form.submit(); return false;", :class => "form-control" %>
+      <%= select_tag 'user', content_tag('option') + options_from_collection_for_select(@users, :id, :name, params[:user_id].to_i),
+      :onchange => "this.form.submit(); return false;", :class => "form-control" %>
     </div>
   </div>
 </fieldset>
@@ -30,33 +33,35 @@
 
 
 <fieldset><legend><%= l(:label_project_tasks) %></legend>
-<div id="date" style="width: 37vh"></div>
-&nbsp;
+  <div id="date" style="width: 37vh"></div>
+  &nbsp;
   <table id="tasks" class="table table-striped table-hover table-bordered">
     <thead>
       <tr>
         <%= sort_header_tag('issues.id', :caption => l(:field_id)) %>
-        <th>Project</th>
-        <th>Tracker</th>
+        <%= sort_header_tag('projects.name', :caption => l(:field_project)) %>
+        <%= sort_header_tag('trackers.name', :caption => l(:field_tracker)) %>
         <%= sort_header_tag('issues.subject', :caption => l(:field_subject)) %>
         <%= sort_header_tag('issues.estimated_hours', :caption => l(:field_estimated_hours)) %>
-        <th>Estimated time for task per day</th>
-        <th>Assignee</th>
-        <th>Assignee's time for project per day</th>
+        <%= sort_header_tag('estimated_hours_per_day', :caption => l(:field_estimated_hours_per_day)) %>
+        <%= sort_header_tag('users.firstname', :caption => l(:field_assignee_firstname)) %>
+        <%= sort_header_tag('users.lastname', :caption => l(:field_assignee_lastname)) %>
+        <%= sort_header_tag('members.hours_per_day', :caption => l(:field_assignee_hours_per_day)) %>
       </tr>
     </thead>
     <tbody>
       <% @issues.each do |issue| %>
-        <tr>
-          <td><%= issue.id %></td>
-          <td><%= issue.project %></td>
-          <td><%= issue.tracker %></td>
-          <td><%= issue.subject %></td>
-          <td><%= issue.estimated_hours %></td>
-          <td><%= estimated_hours_per_day(issue) %></td>
-          <td><%= issue_assigned_to(issue) %></td>
-          <td><%= assignees_hours_per_day(issue) %></td>
-        </tr>
+      <tr>
+        <td><%= issue.id %></td>
+        <td><%= issue.project %></td>
+        <td><%= issue.tracker %></td>
+        <td><%= issue.subject %></td>
+        <td><%= issue.estimated_hours %></td>
+        <td><%= estimated_hours_per_day(issue) %></td>
+        <td><%= issue_assigned_to_firstname(issue) %></td>
+        <td><%= issue_assigned_to_lastname(issue) %></td>
+        <td><%= assignees_hours_per_day(issue) %></td>
+      </tr>
       <% end %>
     </tbody>
   </table>
@@ -65,7 +70,7 @@
 &nbsp;
 
 <fieldset><legend><%= l(:label_project_members) %></legend>
-<table id="members" class="table table-striped table-hover table-bordered">
+  <table id="members" class="table table-striped table-hover table-bordered">
     <thead>
       <tr>
         <th>Member</th>
@@ -77,6 +82,7 @@
       </tr>
     </thead>
     <tbody>
+    <% @members.each do |member| %>
       <tr>
         <td>Maria</td>
         <td>1</td>
@@ -85,6 +91,7 @@
         <td>2</td>
         <td>14</td>
       </tr>
+    <% end %>
       <tr>
         <td>Someone else</td>
         <td>1</td>

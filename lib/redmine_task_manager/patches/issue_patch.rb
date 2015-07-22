@@ -7,6 +7,9 @@ module RedmineTaskManager
 
           safe_attributes 'start_time'
 
+          scope :dated, ->(date) { where("(start_date IS NULL)
+            OR (start_date IS NOT NULL AND start_date <= ?)", date) }
+
         end
       end
     end

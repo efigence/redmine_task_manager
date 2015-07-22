@@ -1,16 +1,22 @@
 <h2><%=l(:label_task_manager)%></h2>
 
-<div class="alert alert-danger">
-  <strong>You have unassigned project tasks.</strong>
-</div>
+<% if has_unassigned_issues? %>
+  <div class="alert alert-danger">
+    <strong>You have unassigned project tasks.</strong>
+  </div>
+<% end %>
 
-<div class="alert alert-danger">
-  <strong>You have overbooked project members.</strong>
-</div>
+<% if has_overbooked_members? %>
+  <div class="alert alert-danger">
+    <strong>You have overbooked project members.</strong>
+  </div>
+<% end %>
 
-<div class="alert alert-danger">
-  <strong>You have underbooked project members.</strong>
-</div>
+<% if has_underbooked_members? %>
+  <div class="alert alert-danger">
+    <strong>You have underbooked project members.</strong>
+  </div>
+<% end %>
 
 <fieldset><legend><%= l(:label_filter_plural) %></legend>
   <div class="splitcontentleft, col-sm-4">
@@ -52,10 +58,10 @@
     <tbody>
       <% @issues.each do |issue| %>
       <tr>
-        <td><%= issue.id %></td>
+        <td><%= link_to issue.id, issue %></td>
         <td><%= issue.project %></td>
         <td><%= issue.tracker %></td>
-        <td><%= issue.subject %></td>
+        <td><%= link_to issue.subject, issue %></td>
         <td><%= issue.estimated_hours %></td>
         <td><%= estimated_hours_per_day(issue) %></td>
         <td><%= issue_assigned_to_firstname(issue) %></td>
@@ -82,7 +88,6 @@
       </tr>
     </thead>
     <tbody>
-    <% @members.each do |member| %>
       <tr>
         <td>Maria</td>
         <td>1</td>
@@ -91,7 +96,6 @@
         <td>2</td>
         <td>14</td>
       </tr>
-    <% end %>
       <tr>
         <td>Someone else</td>
         <td>1</td>

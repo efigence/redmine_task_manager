@@ -33,4 +33,16 @@ module TaskManagerHelper
     end
   end
 
+  def has_unassigned_issues?
+    @issues.map(&:assigned_to_id).include? nil
+  end
+
+  def has_overbooked_members?
+    true
+  end
+
+  def has_underbooked_members?
+    false
+  end
+
 end

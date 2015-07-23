@@ -28,9 +28,12 @@ class TaskManagerController < ApplicationController
                   .joins("LEFT JOIN users ON issues.assigned_to_id = users.id")
                   .joins("LEFT JOIN members ON issues.assigned_to_id = members.user_id")
     scope = scope.where(project_id: params[:project_id]) if params[:project_id].present?
-    # @cos = User.where(group_id: params[:group_id]).map(&:id)
-    # scope = scope.where(user_id: @cos) if params[:group_id].present?
     scope = scope.where(assigned_to_id: params[:user_id]) if params[:user_id].present?
+
+    if params[:group_id].present?
+      users = User.joins(:groups).where('users_groups_users_join.group_id = ?', params[:group_id]).pluck(:id)
+      scope = scope.where(assigned_to_id: users)
+    end
 
     @issue_count = scope.count
     @issue_pages = Paginator.new @issue_count, @limit, params['page']

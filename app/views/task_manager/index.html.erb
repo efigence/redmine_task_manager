@@ -55,11 +55,11 @@
         <%= sort_header_tag('trackers.name', :caption => l(:field_tracker)) %>
         <%= sort_header_tag('issues.subject', :caption => l(:field_subject)) %>
         <%= sort_header_tag('issues.estimated_hours', :caption => l(:field_estimated_hours)) %>
-        <th><%= l(:field_estimated_hours_per_day) %></th>
+        <th>Estimated time left</th>
         <%= sort_header_tag('users.firstname', :caption => l(:field_assignee_firstname)) %>
         <%= sort_header_tag('users.lastname', :caption => l(:field_assignee_lastname)) %>
         <%= sort_header_tag('members.hours_per_day', :caption => l(:field_assignee_hours_per_day)) %>
-        <th>Time difference (temp column)</th>
+        <th>First day hours (helper column)</th>
       </tr>
     </thead>
     <tbody>
@@ -70,11 +70,11 @@
         <td><%= issue.tracker %></td>
         <td><%= link_to issue.subject, issue %></td>
         <td><%= issue.estimated_hours %></td>
-        <td><%= estimated_hours_per_day(issue) %></td>
+        <td><%= super_time(issue) %></td>
         <td><%= issue_assigned_to_firstname(issue) %></td>
         <td><%= issue_assigned_to_lastname(issue) %></td>
         <td><%= assignees_hours_per_day(issue) %></td>
-        <td><%= time_difference(issue) %></td>
+        <td><%= first_day(issue) %></td>
       </tr>
       <% end %>
     </tbody>

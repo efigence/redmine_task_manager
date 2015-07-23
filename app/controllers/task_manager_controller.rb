@@ -23,8 +23,8 @@ class TaskManagerController < ApplicationController
       @limit = per_page_option
     end
 
-    scope = Issue.open.dated(Date.today).joins("JOIN trackers ON issues.tracker_id = trackers.id")
-                  .joins("JOIN projects ON issues.project_id = projects.id")
+    scope = Issue.open.dated(Date.today).joins("INNER JOIN trackers ON issues.tracker_id = trackers.id")
+                  .joins("INNER JOIN projects ON issues.project_id = projects.id")
                   .joins("LEFT JOIN users ON issues.assigned_to_id = users.id")
                   .joins("LEFT JOIN members ON issues.assigned_to_id = members.user_id")
     scope = scope.where(project_id: params[:project_id]) if params[:project_id].present?

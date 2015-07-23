@@ -1,57 +1,119 @@
 <h2><%=l(:label_task_manager)%></h2>
 
 <% if has_unassigned_issues? %>
-  <div class="alert alert-danger">
-    <strong><%= l(:label_unassigned_tasks) %></strong>
-  </div>
+<div class="alert alert-danger">
+  <strong><%= l(:label_unassigned_tasks) %></strong>
+</div>
 <% end %>
 
 <% if has_overbooked_members? %>
-  <div class="alert alert-danger">
-    <strong><%= l(:label_overbooked_members) %></strong>
-  </div>
+<div class="alert alert-danger">
+  <strong><%= l(:label_overbooked_members) %></strong>
+</div>
 <% end %>
 
 <% if has_underbooked_members? %>
-  <div class="alert alert-danger">
-    <strong><%= l(:label_underbooked_members) %></strong>
-  </div>
+<div class="alert alert-danger">
+  <strong><%= l(:label_underbooked_members) %></strong>
+</div>
 <% end %>
 
 <%= form_tag(task_manager_path, :method => :get) do %>
-  <fieldset><legend><%= l(:label_filter_plural) %></legend>
-    <div class="splitcontentleft, col-sm-3">
-      <label for='project_id'><%= l(:label_projects) %>:</label>
-      <%= select_tag 'project_id', content_tag('option') + options_from_collection_for_select(@projects, :id, :name, params[:project_id].to_i),
-      :onchange => "this.form.submit(); return false;", :class => "form-control" %>
-    </div>
-    <div class="splitcontentright">
-      <div style="float: right" class="col-sm-6">
-        <div class="splitcontentleft">
-          <label for='group_id'><%= l(:label_groups) %>:</label>
-          <%= select_tag 'group_id', content_tag('option') + options_from_collection_for_select(@groups, :id, :name, params[:group_id].to_i),
-          :onchange => "this.form.submit(); return false;", :class => "form-control" %>
-        </div>
-        <div class="splitcontentright">
-          <label for='user_id'><%= l(:label_users) %>:</label>
-          <%= select_tag 'user_id', content_tag('option') + options_from_collection_for_select(@users, :id, :name, params[:user_id].to_i),
-          :onchange => "this.form.submit(); return false;", :class => "form-control" %>
-        </div>
+<fieldset><legend><%= l(:label_filter_plural) %></legend>
+  <div class="splitcontentleft, col-sm-3">
+    <label for='project_id'><%= l(:label_projects) %>:</label>
+    <%= select_tag 'project_id', content_tag('option') + options_from_collection_for_select(@projects, :id, :name, params[:project_id].to_i),
+    :onchange => "this.form.submit(); return false;", :class => "form-control" %>
+  </div>
+  <div class="splitcontentright">
+    <div style="float: right" class="col-sm-6">
+      <div class="splitcontentleft">
+        <label for='group_id'><%= l(:label_groups) %>:</label>
+        <%= select_tag 'group_id', content_tag('option') + options_from_collection_for_select(@groups, :id, :name, params[:group_id].to_i),
+        :onchange => "this.form.submit(); return false;", :class => "form-control" %>
+      </div>
+      <div class="splitcontentright">
+        <label for='user_id'><%= l(:label_users) %>:</label>
+        <%= select_tag 'user_id', content_tag('option') + options_from_collection_for_select(@users, :id, :name, params[:user_id].to_i),
+        :onchange => "this.form.submit(); return false;", :class => "form-control" %>
       </div>
     </div>
-  </fieldset>
+  </div>
+</fieldset>
 <% end %>
 &nbsp;
-
 
 <fieldset><legend><%= l(:label_project_tasks) %></legend>
   <div id="date" style="width: 38vh"></div>
   &nbsp;
+
+  <h4>Unassigned tasks</h4>
   <table id="tasks" class="table table-striped table-hover table-bordered">
     <thead>
       <tr>
         <%= sort_header_tag('issues.id', :caption => l(:field_id)) %>
-        <%= sort_header_tag('projects.name', :caption => l(:field_project)) %>
+        <%= sort_header_tag('trackers.name', :caption => l(:field_tracker)) %>
+        <%= sort_header_tag('issues.subject', :caption => l(:field_subject)) %>
+        <%= sort_header_tag('issues.estimated_hours', :caption => l(:field_estimated_hours)) %>
+        <th>Estimated time left</th>
+        <%= sort_header_tag('users.firstname', :caption => l(:field_assignee_firstname)) %>
+        <%= sort_header_tag('users.lastname', :caption => l(:field_assignee_lastname)) %>
+        <%= sort_header_tag('members.hours_per_day', :caption => l(:field_assignee_hours_per_day)) %>
+      </tr>
+    </thead>
+    <tbody>
+  <% @unassigned_issues.each do |issue| %>
+  <tr>
+    <td><%= link_to issue.id, issue %></td>
+    <td><%= issue.tracker %></td>
+    <td><%= link_to issue.subject, issue %></td>
+    <td><%= issue.estimated_hours %></td>
+    <td><%= super_time(issue) %></td>
+    <td><%= issue_assigned_to_firstname(issue) %></td>
+    <td><%= issue_assigned_to_lastname(issue) %></td>
+    <td><%= assignees_hours_per_day(issue) %></td>
+  </tr>
+  <% end %>
+      </tbody>
+    </table>
+  </fieldset>
+
+  <% @users.each do |u| %>
+  <h4></h4>
+  <div class="splitcontentleft, col-sm-1">
+    <h3><%= u.name %></h3>
+  </div>
+  <div class="splitcontentright, col-sm-11">
+    <table id="members" class="table table-striped table-hover table-bordered">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Project manager</th>
+          <th>Hours per day</th>
+          <th># of tasks</th>
+          <th>Estimated time for tasks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% u.projects.each do |p| %>
+          <% if members_issue_count(u, p) > 0 %>
+          <tr>
+          <td><%= p.name %></td>
+            <td>Menedżer</td>
+            <td><%= members_hours_per_day(u,p) %></td>
+            <td><%= members_issue_count(u,p) %></td>
+            <td><%= members_estimated_time(u,p) %></td>
+          </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <table id="tasks" class="table table-striped table-hover table-bordered">
+    <thead>
+      <tr>
+        <%= sort_header_tag('issues.id', :caption => l(:field_id)) %>
         <%= sort_header_tag('trackers.name', :caption => l(:field_tracker)) %>
         <%= sort_header_tag('issues.subject', :caption => l(:field_subject)) %>
         <%= sort_header_tag('issues.estimated_hours', :caption => l(:field_estimated_hours)) %>
@@ -60,13 +122,13 @@
         <%= sort_header_tag('users.lastname', :caption => l(:field_assignee_lastname)) %>
         <%= sort_header_tag('members.hours_per_day', :caption => l(:field_assignee_hours_per_day)) %>
         <th>First day hours (helper column)</th>
+        <th>Logged time</th>
       </tr>
     </thead>
     <tbody>
       <% @issues.each do |issue| %>
       <tr>
         <td><%= link_to issue.id, issue %></td>
-        <td><%= issue.project %></td>
         <td><%= issue.tracker %></td>
         <td><%= link_to issue.subject, issue %></td>
         <td><%= issue.estimated_hours %></td>
@@ -75,6 +137,7 @@
         <td><%= issue_assigned_to_lastname(issue) %></td>
         <td><%= assignees_hours_per_day(issue) %></td>
         <td><%= first_day(issue) %></td>
+        <td><%= issue_time_entries(issue) %></td>
       </tr>
       <% end %>
     </tbody>
@@ -83,34 +146,7 @@
 </fieldset>
 &nbsp;
 
-<fieldset><legend><%= l(:label_project_members) %></legend>
-  <table id="members" class="table table-striped table-hover table-bordered">
-    <thead>
-      <tr>
-        <th>First name</th>
-        <th>Last name</th>
-        <th># of project tasks</th>
-        <th>Estimated time for project tasks per day</th>
-        <th>Time for project per day</th>
-        <th># of all tasks</th>
-        <th>Estimated time for all tasks</th>
-      </tr>
-    </thead>
-    <tbody>
-    <% Project.first.members.each do |m| %>
-      <tr>
-        <td><%= m.user.firstname %></td>
-        <td><%= m.user.lastname %></td>
-        <td><%= member_issues(m) %></td>
-        <td><%= member_issues_time(m) %></td>
-        <td>6</td>
-        <td>2</td>
-        <td>14</td>
-      </tr>
-    <% end %>
-    </tbody>
-  </table>
-</fieldset>
+<% end %>
 
 
 <% content_for :header_tags do %>

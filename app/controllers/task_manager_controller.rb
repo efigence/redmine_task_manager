@@ -39,7 +39,7 @@ class TaskManagerController < ApplicationController
     @issue_pages = Paginator.new @issue_count, @limit, params['page']
     @offset ||= @issue_pages.offset
     @issues =  scope.order(sort_clause).limit(@limit).offset(@offset).to_a
-    @unassigned_issues = scope.where(assigned_to_id: nil).order(sort_clause).limit(@limit).offset(@offset).to_a
+    @unassigned_issues = scope.where(assigned_to_id: nil)
 
     @members = Member.all
     @projects = Project.all.sort_by(&:name)

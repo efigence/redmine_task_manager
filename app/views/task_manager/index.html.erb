@@ -55,7 +55,7 @@
         <%= sort_header_tag('trackers.name', :caption => l(:field_tracker)) %>
         <%= sort_header_tag('issues.subject', :caption => l(:field_subject)) %>
         <%= sort_header_tag('issues.estimated_hours', :caption => l(:field_estimated_hours)) %>
-        <th>Estimated time left</th>
+        <th>Estimated due date</th>
         <%= sort_header_tag('users.firstname', :caption => l(:field_assignee_firstname)) %>
         <%= sort_header_tag('users.lastname', :caption => l(:field_assignee_lastname)) %>
         <%= sort_header_tag('members.hours_per_day', :caption => l(:field_assignee_hours_per_day)) %>
@@ -117,16 +117,15 @@
         <%= sort_header_tag('trackers.name', :caption => l(:field_tracker)) %>
         <%= sort_header_tag('issues.subject', :caption => l(:field_subject)) %>
         <%= sort_header_tag('issues.estimated_hours', :caption => l(:field_estimated_hours)) %>
-        <th>Estimated time left</th>
+        <th>Estimated due date</th>
         <%= sort_header_tag('users.firstname', :caption => l(:field_assignee_firstname)) %>
         <%= sort_header_tag('users.lastname', :caption => l(:field_assignee_lastname)) %>
         <%= sort_header_tag('members.hours_per_day', :caption => l(:field_assignee_hours_per_day)) %>
-        <th>First day hours (helper column)</th>
         <th>Logged time</th>
       </tr>
     </thead>
     <tbody>
-      <% @issues.each do |issue| %>
+      <% Issue.where(assigned_to_id: u.id).each do |issue| %>
       <tr>
         <td><%= link_to issue.id, issue %></td>
         <td><%= issue.tracker %></td>
@@ -136,7 +135,6 @@
         <td><%= issue_assigned_to_firstname(issue) %></td>
         <td><%= issue_assigned_to_lastname(issue) %></td>
         <td><%= assignees_hours_per_day(issue) %></td>
-        <td><%= first_day(issue) %></td>
         <td><%= issue_time_entries(issue) %></td>
       </tr>
       <% end %>

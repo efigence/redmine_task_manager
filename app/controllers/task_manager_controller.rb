@@ -12,6 +12,7 @@ class TaskManagerController < ApplicationController
                             trackers.name
                             issues.subject
                             issues.estimated_hours
+                            issues.start_date
                             users.firstname
                             users.lastname
                             members.hours_per_day)

@@ -1,5 +1,5 @@
 class CreateIssueLogs < ActiveRecord::Migration
-  def self.down
+  def self.up
     create_table :issue_logs do |t|
       t.integer :issue_id
       t.integer :project_id
@@ -10,12 +10,13 @@ class CreateIssueLogs < ActiveRecord::Migration
     add_index :issue_logs, :project_id
     add_index :issue_logs, :user_id
 
-  Issue.all.each {|i|
-    j = IssueLog.new(:issue_id => i.id, :project_id => i.project_id, :user_id => i.assigned_to_id, :time => i.estimated_hours)
-    j.save
-  }
+    Issue.all.each {|i|
+      j = IssueLog.new(:issue_id => i.id, :project_id => i.project_id, :user_id => i.assigned_to_id, :time => i.estimated_hours)
+      j.save
+    }
+  end
 
-  def self.up
+  def self.down
     drop_table :issue_logs
   end
 

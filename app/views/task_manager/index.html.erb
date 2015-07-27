@@ -1,7 +1,7 @@
 <h2><%=l(:label_task_manager)%></h2>
-
+&nbsp;
 <%= form_tag(task_manager_path, :method => :get) do %>
-<fieldset><legend><%= l(:label_filter_plural) %></legend>
+<fieldset>
   <div class="splitcontentleft, col-sm-3">
     <label for='project_id'><%= l(:label_projects) %>:</label>
     <%= select_tag 'project_id', content_tag('option') + options_from_collection_for_select(@projects, :id, :name, params[:project_id].to_i),
@@ -24,61 +24,64 @@
 </fieldset>
 <% end %>
 &nbsp;
+<legend></legend>
 
-
+<% if params[:user_id].present? || params[:project_id].present? || params[:group_id].present? %>
 <div id="date" style="width: 39vh"></div>
 &nbsp;
+<% end %>
 
+<% if @project %>
 <div class="panel panel-default">
+
+  <h3>Project: <%= @project.name %></h3>
   &nbsp;
 
-  <% if has_unassigned_issues?(Project.first) %>
-  <div class="alert alert-danger">
-    <strong><%= l(:label_unassigned_tasks) %></strong>
+  <% if has_underbooked_members?(@project) %>
+  <div class="alert alert-warning">
+    <strong><%= l(:label_underbooked_members) %></strong>
   </div>
   <% end %>
 
-  <% if has_overbooked_members?(Project.first) %>
+  <% if has_overbooked_members?(@project) %>
   <div class="alert alert-danger">
     <strong><%= l(:label_overbooked_members) %></strong>
   </div>
   <% end %>
 
-  <% if has_underbooked_members?(Project.first) %>
+  <% if has_unassigned_issues?(@project) %>
   <div class="alert alert-danger">
-    <strong><%= l(:label_underbooked_members) %></strong>
+    <strong><%= l(:label_unassigned_tasks) %>:</strong>
+    <br><br>
+    <table id="tasks" class="table">
+      <thead>
+        <tr>
+          <th><%= l(:field_id) %></th>
+          <th><%= l(:field_tracker) %></th>
+          <th><%= l(:field_subject) %></th>
+          <th><%= l(:field_estimated_hours) %></th>
+          <th><%= l(:field_start_date) %></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @unassigned_issues.each do |issue| %>
+        <tr>
+          <td><%= link_to issue.id, issue %></td>
+          <td><%= issue.tracker %></td>
+          <td><%= link_to issue.subject, issue %></td>
+          <td><%= issue.estimated_hours %></td>
+          <td><%= issue.start_date %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
-  <% end %>
-
-  <h3><%= Project.first.name %></h3>
-  &nbsp;
-
-  <h4>Unassigned tasks</h4>
-  <table id="tasks" class="table table-striped table-hover">
-    <thead>
-      <tr>
-        <%= sort_header_tag('issues.id', :caption => l(:field_id)) %>
-        <%= sort_header_tag('trackers.name', :caption => l(:field_tracker)) %>
-        <%= sort_header_tag('issues.subject', :caption => l(:field_subject)) %>
-        <%= sort_header_tag('issues.estimated_hours', :caption => l(:field_estimated_hours)) %>
-        <%= sort_header_tag('issues.start_date', :caption => l(:field_start_date)) %>
-      </tr>
-    </thead>
-    <tbody>
-      <% @unassigned_issues.each do |issue| %>
-      <tr>
-        <td><%= link_to issue.id, issue %></td>
-        <td><%= issue.tracker %></td>
-        <td><%= link_to issue.subject, issue %></td>
-        <td><%= issue.estimated_hours %></td>
-        <td><%= issue.start_date %></td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
 </div>
+<% end %>
+<% end %>
 
 <% @users.each do |u| %>
+<% if @project && @issues && !@issues.where(assigned_to_id: u.id).empty? %>
 <div class="panel panel-default">
   <div class="splitcontentleft, col-sm-3">
     &nbsp;
@@ -95,7 +98,7 @@
             <th>Hours per day</th>
             <th># of tasks</th>
             <th>Estimated time for tasks</th>
-            <th>Overbooked?</th>
+            <th>Workload</th>
           </tr>
         </thead>
         <tbody>
@@ -123,33 +126,33 @@
         <th>Project</th>
         <%= sort_header_tag('trackers.name', :caption => l(:field_tracker)) %>
         <%= sort_header_tag('issues.subject', :caption => l(:field_subject)) %>
-        <%= sort_header_tag('issues.estimated_hours', :caption => l(:field_estimated_hours)) %>
         <%= sort_header_tag('issues.start_date', :caption => l(:field_start_date)) %>
         <th>Estimated due date</th>
+        <%= sort_header_tag('issues.estimated_hours', :caption => l(:field_estimated_hours)) %>
         <th><%= l(:field_assignee_name) %></th>
         <th><%= l(:field_assignee_hours_per_day) %></th>
         <th>Logged time</th>
       </tr>
     </thead>
     <tbody>
-      <% Issue.where("assigned_to_id = ? AND project_id = ?", u.id, 1).each do |issue| %>
+      <% @issues.where(assigned_to_id: u.id).each do |issue| %>
       <tr>
         <td><%= link_to issue.id, issue %></td>
         <td><%= issue.project %></td>
         <td><%= issue.tracker %></td>
         <td><%= link_to issue.subject, issue %></td>
-        <td><%= issue.estimated_hours %></td>
         <td><%= issue.start_date %></td>
         <td><%= super_time(issue) %></td>
+        <td><%= issue.estimated_hours %></td>
         <td><%= issue_assigned_to_name(issue) %></td>
         <td><%= assignees_hours_per_day(issue) %></td>
         <td><%= issue_time_entries(issue) %></td>
       </tr>
       <% end %>
+      <% end %>
     </tbody>
   </table>
 </div>
-<!-- <ul class="pagination"><li><%= pagination_links_full @issue_pages, @issue_count %><li></ul> -->
 </fieldset>
 
 <% end %>

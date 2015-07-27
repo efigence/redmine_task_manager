@@ -17,35 +17,14 @@ class TaskManagerController < ApplicationController
                             users.lastname
                             members.hours_per_day)
 
-    case params[:format]
-    when 'xml', 'json'
-      @offset, @limit = api_offset_and_limit
-    else
-      @limit = per_page_option
-    end
-
-    scope = Issue.open.dated(Date.today).joins("INNER JOIN trackers ON issues.tracker_id = trackers.id")
-                  .joins("INNER JOIN projects ON issues.project_id = projects.id")
-                  .joins("LEFT JOIN users ON issues.assigned_to_id = users.id")
-                  .joins("LEFT JOIN members ON issues.assigned_to_id = members.user_id")
-    scope = scope.where(project_id: params[:project_id]) if params[:project_id].present?
-    scope = scope.where(assigned_to_id: params[:user_id]) if params[:user_id].present?
-
-    if params[:group_id].present?
-      users = User.joins(:groups).where('users_groups_users_join.group_id = ?', params[:group_id]).pluck(:id)
-      scope = scope.where(assigned_to_id: users)
-    end
-
-    @issue_count = scope.count
-    @issue_pages = Paginator.new @issue_count, @limit, params['page']
-    @offset ||= @issue_pages.offset
-    @issues =  scope.order(sort_clause).limit(@limit).offset(@offset).to_a
-    @unassigned_issues = scope.where(assigned_to_id: nil)
-
     @members = Member.all
     @projects = Project.all.sort_by(&:name)
     @users = User.all.sort_by(&:firstname)
     @groups = Group.all.sort_by(&:lastname)
+    @project = Project.where(id: params[:project_id]).first if params[:project_id].present?
+    @unassigned_issues = @project.issues.open.where(assigned_to_id: nil) if params[:project_id].present?
+    @users = User.where(id: params[:user_id]) if params[:user_id].present?
+    @issues = Issue.open.where("project_id = ?", @project.id) if params[:project_id].present?
 
   end
 

@@ -3,7 +3,7 @@ en:
   field_assignee_name: Assignee's name
   field_assignee_hours_per_day: Assignee's time for project per day
   field_estimated_hours_per_day: Estimated time for task per day
-  field_estimated_hours: Estimated time for task
+  field_estimated_hours: Estimated time
   field_id: '#'
   field_project: Project
   field_start_date: Start date
@@ -11,6 +11,7 @@ en:
   field_subject: Subject
   field_tracker: Tracker
   label_calendar: Calendar
+  label_date_choice: Date
   label_groups: Groups
   label_hours_per_day: Hours per day
   label_overbooked_members: You have overbooked project members.
@@ -18,7 +19,7 @@ en:
   label_project_tasks: Project tasks
   label_projects: Projects
   label_task_manager: Task manager
-  label_unassigned_tasks: You have unassigned project tasks.
+  label_unassigned_tasks: You have unassigned project tasks
   label_underbooked_members: You have underbooked project members.
   label_users: Users
   settings:

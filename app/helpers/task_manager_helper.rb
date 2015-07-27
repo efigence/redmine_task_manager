@@ -49,11 +49,19 @@ module TaskManagerHelper
   end
 
   def has_overbooked_members?(project)
-    false
+    overload = 0
+    project.users.each do |u|
+      overload += 1 if overload(u, project) == 'OVERBOOKED!'
+    end
+    return true if overload > 0
   end
 
   def has_underbooked_members?(project)
-    false
+    underload = 0
+    project.users.each do |u|
+      underload += 1 if overload(u, project) == 'UNDERBOOKED!'
+    end
+    return true if underload > 0
   end
 
   # super time
@@ -125,7 +133,7 @@ module TaskManagerHelper
     elsif time < @memb_hours
       return 'UNDERBOOKED!'
     else
-      return 'OK!'
+      return 'OK'
     end
 
   end

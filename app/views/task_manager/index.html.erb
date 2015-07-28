@@ -141,7 +141,7 @@
         <td><%= issue.tracker %></td>
         <td><%= link_to issue.subject, issue %></td>
         <td><%= issue.start_date %></td>
-        <td><%= super_time(issue) %></td>
+        <td><%= estimated_due_date(issue) %></td>
         <td><%= issue.estimated_hours %></td>
         <td><%= issue_assigned_to_name(issue) %></td>
         <td><%= assignees_hours_per_day(issue) %></td>

@@ -64,15 +64,15 @@ module TaskManagerHelper
     return true if underload > 0
   end
 
-  # super time
-  def super_time(issue)
+  # estimated due date
+  def estimated_due_date(issue)
 
     return unless issue.estimated_hours && issue.start_date
 
     subtract_first_day_hours(issue)
     subtract_hours(issue)
 
-    return issue.start_date + @days
+    return @days.business_days.after(issue.start_date)
 
   end
 
@@ -86,7 +86,6 @@ module TaskManagerHelper
   def subtract_first_day_hours(issue)
     @estimated_time_left = issue.estimated_hours
     @member_hours = assignees_hours_per_day(issue)
-    @days = 0
 
     if issue.start_time && first_day(issue) < @member_hours
       @estimated_time_left -= @first_day_hours
@@ -94,10 +93,10 @@ module TaskManagerHelper
       @estimated_time_left -= @member_hours
     end
 
-    @days += 1
   end
 
   def subtract_hours(issue)
+    @days = 0
     until @estimated_time_left < 0
       @estimated_time_left -= @member_hours
       @days += 1

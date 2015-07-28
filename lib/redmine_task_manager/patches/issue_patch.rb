@@ -5,7 +5,7 @@ module RedmineTaskManager
         base.class_eval do
           unloadable
 
-          has_many :issue_logs
+          has_many :issue_logs, dependent: :destroy
 
           safe_attributes 'start_time'
 

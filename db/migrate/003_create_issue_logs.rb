@@ -4,16 +4,10 @@ class CreateIssueLogs < ActiveRecord::Migration
       t.integer :issue_id
       t.integer :project_id
       t.integer :user_id
-      t.float :time
+      t.date :date
+      t.integer :time
     end
-    add_index :issue_logs, :issue_id
-    add_index :issue_logs, :project_id
-    add_index :issue_logs, :user_id
-
-    Issue.all.each {|i|
-      j = IssueLog.new(:issue_id => i.id, :project_id => i.project_id, :user_id => i.assigned_to_id, :time => i.estimated_hours)
-      j.save
-    }
+    add_index :issue_logs, [:user_id, :date]
   end
 
   def self.down

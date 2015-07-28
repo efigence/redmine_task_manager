@@ -27,14 +27,13 @@
 <legend></legend>
 
 <% if params[:user_id].present? || params[:project_id].present? || params[:group_id].present? %>
-<div id="date" style="width: 39vh"></div>
+<div id="date" style="width: 38vh"></div>
 &nbsp;
 <% end %>
 
 <% if @project %>
 <div class="panel panel-default">
-
-  <h3>Project: <%= @project.name %></h3>
+  <h3>&nbsp; Project: <%= @project.name %></h3>
   &nbsp;
 
   <% if has_underbooked_members?(@project) %>

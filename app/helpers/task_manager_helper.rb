@@ -88,7 +88,12 @@ module TaskManagerHelper
     @member_hours = assignees_hours_per_day(issue)
     @days = 0
 
-    issue.start_time && first_day(issue) < @member_hours ? (@estimated_time_left -= @first_day_hours) : (@estimated_time_left -= @member_hours)
+    if issue.start_time && first_day(issue) < @member_hours
+      @estimated_time_left -= @first_day_hours
+    else
+      @estimated_time_left -= @member_hours
+    end
+
     @days += 1
   end
 
@@ -125,17 +130,13 @@ module TaskManagerHelper
     time = 0
 
     issues.each do |i|
-      time_left(i) > assignees_hours_per_day(i) ? time += assignees_hours_per_day(i) : time += time_left(i)
+      hours_per_day = assignees_hours_per_day(i)
+      time_left(i) > hours_per_day ? time += hours_per_day : time += time_left(i)
     end
 
-    if time > @memb_hours
-      return 'OVERBOOKED!'
-    elsif time < @memb_hours
-      return 'UNDERBOOKED!'
-    else
-      return 'OK'
-    end
-
+    return 'OVERBOOKED!' if time > @memb_hours
+    return 'UNDERBOOKED!' if time < @memb_hours
+    return 'OK'
   end
 
 end

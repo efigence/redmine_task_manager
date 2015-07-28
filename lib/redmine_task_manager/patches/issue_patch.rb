@@ -5,6 +5,8 @@ module RedmineTaskManager
         base.class_eval do
           unloadable
 
+          has_many :issue_logs
+
           safe_attributes 'start_time'
 
           scope :dated, ->(date) { where("(start_date IS NULL)

@@ -12,6 +12,7 @@ en:
   field_tracker: Tracker
   label_calendar: Calendar
   label_date_choice: Date
+  label_default_working_hours: Default working hours
   label_groups: Groups
   label_hours_per_day: Hours per day
   label_overbooked_members: You have overbooked project members.

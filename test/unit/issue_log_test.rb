@@ -54,7 +54,7 @@ class IssueLogTest < ActiveSupport::TestCase
     end
   end
 
-  def test_should_create_multiple_issue_logs_with_given_start_date_and_estimated_hours_including_week
+  def test_should_create_multiple_issue_logs_with_given_start_date_and_estimated_hours_including_weekend
     issue = build_issue
     assert_difference 'Issue.count', +1 do
       assert_difference 'IssueLog.count', +5 do
@@ -80,6 +80,28 @@ class IssueLogTest < ActiveSupport::TestCase
 
         assert_equal 180, d5.time
         assert_equal date + 6, d5.date
+      end
+    end
+  end
+
+  def test_should_create_multiple_issue_logs_with_given_start_date_and_estimated_hours_including_holidays
+    issue = build_issue
+    assert_difference 'Issue.count', +1 do
+      assert_difference 'IssueLog.count', +2 do
+        date = Date.parse('24/12/2015')
+        issue.start_date = date
+        issue.estimated_hours = 16
+
+        assert issue.save
+
+        d1, d2 = issue.issue_logs.order('date').to_a
+
+        assert_equal 480, d1.time
+        assert_equal date, d1.date
+
+        assert_equal 480, d2.time
+        assert_equal date + 4, d2.date
+
       end
     end
   end

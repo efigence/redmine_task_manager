@@ -1,19 +1,34 @@
 module TaskManagerHelper
 
+  def find_member(user, project)
+    Member.where("project_id = ? AND user_id = ?", project.id, user.id)
+  end
+
+  def find_issue_member(issue)
+    Member.where("project_id = ? AND user_id = ?", issue.project.id, issue.assigned_to_id)
+  end
+
+  def find_issues(user, project)
+    Issue.open.where("project_id = ? AND assigned_to_id = ?", project.id, user.id)
+  end
+
+  def find_time_entries(issue)
+    TimeEntry.where("issue_id = ? and spent_on < ?", issue.id, Date.today)
+  end
 
   # methods for users
   def members_hours_per_day(user, project)
-    member = Member.where("project_id = ? AND user_id = ?", project.id, user.id).first
-    member.hours_per_day if member != nil && member.hours_per_day
+    member = find_member(user, project).first
+    member.hours_per_day if member && member.hours_per_day
   end
 
   def members_issue_count(user, project)
-    Issue.open.where("project_id = ? AND assigned_to_id = ?", project.id, user.id).count
+    find_issues(user, project).count
   end
 
   def members_estimated_time(user, project)
     estimated_time = 0
-    Issue.open.where("project_id = ? AND assigned_to_id = ?", project.id, user.id).each do |i|
+    find_issues(user, project).each do |i|
       estimated_time += i.estimated_hours if i.estimated_hours
     end
     return estimated_time if estimated_time > 0
@@ -21,26 +36,16 @@ module TaskManagerHelper
 
   # methods for tasks
   def issue_assigned_to_name(issue)
-    if issue.assigned_to
-      issue.assigned_to.name
-    else
-      ' This task is not assigned.'
-    end
+    issue.assigned_to ? issue.assigned_to.name : ' This task is not assigned.'
   end
 
   def assignees_hours_per_day(issue)
-    member = Member.where("project_id = ? AND user_id = ?", issue.project.id, issue.assigned_to_id)
-    !member.empty? && member.first.hours_per_day ? member.first.hours_per_day : 8.0
+    member = find_issue_member(issue).first
+    member.hours_per_day || 8.0
   end
 
   def issue_time_entries(issue)
-    time_entries = 0
-    unless TimeEntry.where("issue_id = ? and spent_on = ?", issue.id, Date.today).empty?
-      TimeEntry.where("issue_id = ? and spent_on = ?", issue.id, Date.today).each do |t|
-        time_entries += t.hours if t.hours
-      end
-    end
-    return time_entries if time_entries > 0
+    find_time_entries(issue).sum(:hours)
   end
 
   # others
@@ -124,8 +129,8 @@ module TaskManagerHelper
   end
 
   def overload(user, project)
-    issues = Issue.open.where("assigned_to_id = ? AND project_id = ?", user.id, project.id)
-    member = Member.where("user_id = ? AND project_id = ?", user.id, project.id).first
+    issues = find_issues(user, project)
+    member = find_member(user, project).first
     time = 0
 
     issues.each do |i|

@@ -19,7 +19,6 @@ Redmine::Plugin.register :redmine_task_manager do
 
     ActionDispatch::Callbacks.to_prepare do
       require 'redmine_task_manager/patches/issue_patch'
-      require 'redmine_task_manager/patches/issues_controller_patch'
       require 'redmine_task_manager/patches/member_patch'
       require 'redmine_task_manager/patches/members_controller_patch'
       require 'redmine_task_manager/patches/user_patch'

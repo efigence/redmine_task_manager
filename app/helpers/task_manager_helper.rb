@@ -78,9 +78,9 @@ module TaskManagerHelper
 
   def first_day(issue)
     if issue.start_date && issue.start_time
-      @first_day_hours = 17 - (issue.start_time.hour + issue.start_time.min.to_f / 60)
+      first_day_hours = 17 - (issue.start_time.hour + issue.start_time.min.to_f / 60)
     end
-    return @first_day_hours
+    return first_day_hours
   end
 
   def subtract_first_day_hours(issue)

@@ -10,6 +10,6 @@ class IssueLog < ActiveRecord::Base
     'date',
     'time'
 
-
+  attr_accessible :issue_id, :project_id, :user_id, :date, :time
 
 end
